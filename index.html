@@ -40,8 +40,13 @@
 
       output.textContent = "Searching...";
 
+      // CORS proxy URL
+      const corsProxy = "https://cors-anywhere.herokuapp.com/";
+      const apiUrl = `https://apim.rec.net/accounts/account/search?name=${encodeURIComponent(name)}`;
+      const proxiedUrl = corsProxy + apiUrl;
+
       try {
-        const response = await fetch(`https://apim.rec.net/accounts/account/search?name=${encodeURIComponent(name)}`, {
+        const response = await fetch(proxiedUrl, {
           method: "GET",
           headers: {
             "accept": "application/json"
