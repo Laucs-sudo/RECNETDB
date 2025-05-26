@@ -2,20 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Rec.net Public API Search</title>
+  <title>Rec.net User Search</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 2em;
-      background: #000;
+      background-color: #000;
       color: #fff;
+      padding: 2em;
+    }
+    h1 {
+      color: #ff9a00;
     }
     input, button {
-      padding: 0.5em;
       font-size: 1em;
-      margin: 0.5em 0;
-      border-radius: 6px;
+      padding: 0.5em;
+      margin-top: 0.5em;
       border: none;
+      border-radius: 5px;
     }
     input {
       width: 250px;
@@ -24,6 +27,7 @@
       background-color: #ff9a00;
       color: #000;
       cursor: pointer;
+      margin-left: 0.5em;
     }
     button:hover {
       background-color: #ffaa33;
@@ -31,15 +35,14 @@
     #output {
       margin-top: 1em;
       padding: 1em;
-      background: #111;
+      background-color: #111;
       border: 1px solid #444;
       border-radius: 8px;
-      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <h1>Rec.net User Lookup</h1>
+  <h1>Rec.net User Search</h1>
   <input type="text" id="usernameInput" placeholder="Enter Rec Room username">
   <button onclick="searchRecNet()">Search</button>
 
@@ -57,14 +60,15 @@
 
       output.textContent = "🔍 Searching...";
 
-      const proxy = "https://corsproxy.io/?";
-      const apiURL = `https://apim.rec.net/accounts/account/search?name=${encodeURIComponent(name)}`;
+      const apiKey = "5db1df5e";
+      const apiURL = `https://apim.rec.net/accounts/account/search?name=${encodeURIComponent(name)}&apikey=${apiKey}`;
+      const proxyURL = `https://corsproxy.io/?${encodeURIComponent(apiURL)}`;
 
       try {
-        const response = await fetch(proxy + apiURL, {
+        const response = await fetch(proxyURL, {
           method: "GET",
           headers: {
-            "accept": "application/json"
+            "Accept": "application/json"
           }
         });
 
@@ -85,6 +89,7 @@
             🧩 <strong>Account ID:</strong> ${user.accountId}
           `;
         }
+
       } catch (err) {
         output.textContent = `🚫 Error: ${err.message}`;
       }
