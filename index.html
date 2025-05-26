@@ -7,22 +7,39 @@
     body {
       font-family: Arial, sans-serif;
       padding: 2em;
-      background: #f0f0f0;
+      background: #000;
+      color: #fff;
     }
     input, button {
       padding: 0.5em;
+      font-size: 1em;
       margin: 0.5em 0;
+      border-radius: 6px;
+      border: none;
+    }
+    input {
+      width: 250px;
+    }
+    button {
+      background-color: #ff9a00;
+      color: #000;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ffaa33;
     }
     #output {
       margin-top: 1em;
       padding: 1em;
-      background: #fff;
-      border: 1px solid #ccc;
+      background: #111;
+      border: 1px solid #444;
+      border-radius: 8px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <h1>Rec.net Public API Search</h1>
+  <h1>Rec.net User Lookup</h1>
   <input type="text" id="usernameInput" placeholder="Enter Rec Room username">
   <button onclick="searchRecNet()">Search</button>
 
@@ -34,19 +51,17 @@
       const output = document.getElementById("output");
 
       if (!name) {
-        output.textContent = "Please enter a username.";
+        output.textContent = "⚠️ Please enter a username.";
         return;
       }
 
-      output.textContent = "Searching...";
+      output.textContent = "🔍 Searching...";
 
-      // CORS proxy URL
-      const corsProxy = "https://cors-anywhere.herokuapp.com/";
-      const apiUrl = `https://apim.rec.net/accounts/account/search?name=${encodeURIComponent(name)}`;
-      const proxiedUrl = corsProxy + apiUrl;
+      const proxy = "https://corsproxy.io/?";
+      const apiURL = `https://apim.rec.net/accounts/account/search?name=${encodeURIComponent(name)}`;
 
       try {
-        const response = await fetch(proxiedUrl, {
+        const response = await fetch(proxy + apiURL, {
           method: "GET",
           headers: {
             "accept": "application/json"
@@ -54,25 +69,24 @@
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
+          throw new Error(`HTTP error ${response.status}`);
         }
 
         const data = await response.json();
 
         if (!data || data.length === 0) {
-          output.textContent = "No user found.";
+          output.textContent = "❌ No user found.";
         } else {
           const user = data[0];
           output.innerHTML = `
-            <strong>Display Name:</strong> ${user.displayName}<br>
-            <strong>Username:</strong> ${user.username}<br>
-            <strong>Platform:</strong> ${user.platform || "N/A"}<br>
-            <strong>ID:</strong> ${user.accountId}<br>
+            👤 <strong>Display Name:</strong> ${user.displayName}<br>
+            🆔 <strong>Username:</strong> ${user.username}<br>
+            🎮 <strong>Platform:</strong> ${user.platform || "N/A"}<br>
+            🧩 <strong>Account ID:</strong> ${user.accountId}
           `;
         }
-
       } catch (err) {
-        output.textContent = "Error: " + err.message;
+        output.textContent = `🚫 Error: ${err.message}`;
       }
     }
   </script>
